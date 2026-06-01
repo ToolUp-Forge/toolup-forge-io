@@ -16,13 +16,22 @@ let private siteHeader =
         [ div
               [ _class "mx-auto max-w-7xl px-6 h-14 flex items-center gap-8" ]
               [
-                // Brand mark — text wordmark for v0; replace with SVG logo once
-                // the design lands.
+                // Brand mark — forge iconset SVG (the ⟨ ⟩ brackets-around-mark
+                // primary logo) plus the wordmark in text. Renders crisply at
+                // any size; falls back to text if the SVG fails to load. The
+                // canonical brand assets live in the forge repo's
+                // Brand Assets/logos/iconset/ and are copied into wwwroot/
+                // verbatim.
                 a
                     [ _href "/"
-                      _class "flex items-center gap-2 text-brand font-semibold tracking-tight" ]
-                    [ span [ _class "text-lg" ] [ str "toolup-forge" ]
-                      span [ _class "text-muted text-sm font-normal" ] [ str "/ docs" ] ]
+                      _class "flex items-center gap-2 text-fg-emphasis font-semibold tracking-tight" ]
+                    [ img
+                          [ _src "/svg/icon-mark.svg"
+                            _alt "toolup-forge"
+                            _class "h-7 w-auto"
+                            _width "28"
+                            _height "28" ]
+                      span [ _class "text-lg" ] [ str "toolup-forge" ] ]
 
                 // Primary nav — text links, brand purple on hover.
                 nav
@@ -79,23 +88,46 @@ let render (page: PublicPage) (bodyClasses: string) (bodyContent: XmlNode) : Xml
                 title [] [ str (sprintf "%s — toolup-forge" page.Title) ]
                 meta [ _name "description"; _content page.Description ]
 
-                // OpenGraph / Twitter card. Shared default OG image; per-page
+                // OpenGraph / Twitter card. Default OG image is the forge
+                // social-preview banner (1280×640, horizontal lockup
+                // brackets-around-mark + wordmark + tagline); per-page
                 // overrides flow through frontmatter `og:image`.
                 meta [ _property "og:title"; _content page.Title ]
                 meta [ _property "og:description"; _content page.Description ]
                 meta [ _property "og:type"; _content "website" ]
                 (match Map.tryFind "og:image" page.Frontmatter with
                  | Some img -> meta [ _property "og:image"; _content img ]
-                 | None -> meta [ _property "og:image"; _content "/og-default.png" ])
+                 | None -> meta [ _property "og:image"; _content "/social/social-preview-1280x640.png" ])
                 meta [ _name "twitter:card"; _content "summary_large_image" ]
+                meta [ _name "twitter:image"; _content "/social/social-preview-1280x640.png" ]
 
                 // Tailwind output. Compiled to wwwroot/css/site.css by the
                 // Build.fs Tailwind target (or `npm run build:css`).
                 link [ _rel "stylesheet"; _href "/css/site.css" ]
 
-                // Favicon + manifest — placeholder; replaced by a real set in
-                // the launch sweep.
-                link [ _rel "icon"; _type "image/svg+xml"; _href "/favicon.svg" ] ]
+                // Forge brand iconset — matches Brand Assets/logos/iconset/
+                // head-snippet.html verbatim. Browser tab favicons, Apple
+                // touch icon, PWA manifest, theme colour for mobile chrome
+                // (brand purple #7A3BD9), and the OG / Twitter social-
+                // preview banner.
+                link
+                    [ _rel "icon"
+                      _type "image/png"
+                      _sizes "32x32"
+                      _href "/favicon/favicon-32.png" ]
+                link
+                    [ _rel "icon"
+                      _type "image/png"
+                      _sizes "16x16"
+                      _href "/favicon/favicon-16.png" ]
+                link
+                    [ _rel "apple-touch-icon"
+                      _sizes "180x180"
+                      _href "/apple/apple-touch-icon.png" ]
+                link [ _rel "manifest"; _href "/site.webmanifest" ]
+                meta [ _name "theme-color"; _content "#7A3BD9" ]
+                meta [ _property "og:image:width"; _content "1280" ]
+                meta [ _property "og:image:height"; _content "640" ] ]
           body
               [ _class "bg-bg text-fg font-sans antialiased min-h-screen flex flex-col" ]
               [ siteHeader; main [ _class bodyClasses ] [ bodyContent ]; siteFooter ] ]

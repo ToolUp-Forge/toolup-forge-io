@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-    <!-- Minimal placeholder favicon — brand-purple rounded square with a
-         lowercase "tf" wordmark. Replace with the real forge brand mark
-         in the Stage 7 launch sweep. -->
-    <rect width="64" height="64" rx="12" fill="#59229D"/>
-    <text x="32" y="44" text-anchor="middle" font-family="Inter, sans-serif" font-size="32" font-weight="700" fill="#FFFFFF">tf</text>
-</svg>

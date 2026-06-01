@@ -68,6 +68,37 @@ The suggestions group by target doc. Each entry: what site authoring revealed �
 
 **Suggested redraft (process):** When SyncDocs lands its link-rewrite step (Stage 4 of the application plan), audit every `[...](../...)` reference. Anything that doesn't resolve to a synced doc becomes a TIDY-UP item.
 
+## 10. `ToolUp.PublicRendering` — honour an explicit `slug:` frontmatter override
+
+**Found:** `PublicRendering`'s `MarkdownContentLoader` derives slugs from the file path (e.g. `content/docs/forms/README.md` → slug `docs/forms/README`). It exposes a flat `Frontmatter: Map<string, string>` on the `PublicPage` record but doesn't consult the map for slug overrides.
+
+**Site impact:** folder READMEs cannot be routed to the natural `/docs/<area>` URL. The site sidebar currently points at `/docs/<area>/README` instead — workable, but unnatural compared to GitHub-Pages-style "/docs/forms" landings.
+
+**Suggested redraft (substrate change):** in `MarkdownContentLoader.fs`, after parsing frontmatter, check `Map.tryFind "slug"` and use the override when present. Path-derived slug stays the default. The doc comment (lines 16-19 of `MarkdownContentLoader.fs`) lists the existing path mapping; add a fourth row noting the frontmatter override.
+
+**Workaround in place:** `Build.fs`'s `SyncDocs` doesn't try to override slugs; folder READMEs render at `/docs/<area>/README` and the sidebar links match.
+
+## 9. OSS publication-boundary leak — `docs/migrations/16d-forwarded-headers-default-on.md`
+
+**Found:** SyncDocs deny-list caught a real boundary leak on the first activation (2026-06-02). The migration's `Pinned` line names private sibling projects — `Concord (Seller + Buyer)`, `Xcelsys/portal`, `cookbook-apps` — which are banned per the workspace `CLAUDE.md` "OSS publication boundary (mandate)". As a result, SyncDocs now skips this file and the site renders without it (88 docs synced vs 89 scanned).
+
+```
+docs/migrations/16d-forwarded-headers-default-on.md:67
+Pinned: `toolup-app`, Concord (Seller + Buyer), `Xcelsys/portal`. ...
+`cookbook-apps` adopt via the next "Update Cookbook" recipe sweep.
+```
+
+**Suggested redraft:** Rewrite that line to use generic consumer language. Suggested replacement:
+
+```
+Pinned consumers: the canonical reference app + downstream private deployments.
+Consumer adoption sweep happens via the recipe-sweep cadence.
+```
+
+The `Pinned` row is internal coordination scaffolding — its purpose was to track which consumers had adopted the refactor. Now that the refactor has shipped widely, the row could be dropped entirely or replaced with a one-liner that doesn't name specific consumers.
+
+**Why it matters:** SyncDocs blocks the file from the site by default. Until the forge-side rewrite lands, anyone navigating to `/docs/migrations/16d-forwarded-headers-default-on` gets a 404. The migration is otherwise complete and useful.
+
 ---
 
 ## Status

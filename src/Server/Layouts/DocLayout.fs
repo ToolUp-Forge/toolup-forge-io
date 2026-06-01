@@ -66,31 +66,31 @@ let private docNav =
                                 [ li
                                       []
                                       [ a
-                                            [ _href "/docs/ai"
+                                            [ _href "/docs/ai/README"
                                               _class "block px-2 py-1 rounded hover:bg-bg-light hover:text-brand" ]
                                             [ str "AI" ] ]
                                   li
                                       []
                                       [ a
-                                            [ _href "/docs/rag"
+                                            [ _href "/docs/rag/README"
                                               _class "block px-2 py-1 rounded hover:bg-bg-light hover:text-brand" ]
                                             [ str "RAG" ] ]
                                   li
                                       []
                                       [ a
-                                            [ _href "/docs/knowledge-base"
+                                            [ _href "/docs/knowledge-base/README"
                                               _class "block px-2 py-1 rounded hover:bg-bg-light hover:text-brand" ]
                                             [ str "Knowledge Base" ] ]
                                   li
                                       []
                                       [ a
-                                            [ _href "/docs/forms"
+                                            [ _href "/docs/forms/README"
                                               _class "block px-2 py-1 rounded hover:bg-bg-light hover:text-brand" ]
                                             [ str "Forms" ] ]
                                   li
                                       []
                                       [ a
-                                            [ _href "/docs/scheduling"
+                                            [ _href "/docs/scheduling/README"
                                               _class "block px-2 py-1 rounded hover:bg-bg-light hover:text-brand" ]
                                             [ str "Scheduling" ] ] ] ]
                       section
