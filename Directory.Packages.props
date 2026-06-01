@@ -27,6 +27,9 @@
     <PackageVersion Include="Fake.IO.FileSystem" Version="6.1.4" />
     <PackageVersion Include="Fake.DotNet.Cli" Version="6.1.4" />
 
+    <!-- Deploy pipeline (Farmer ARM apply via infra/azure/Deploy.fsproj). -->
+    <PackageVersion Include="Farmer" Version="1.9.27" />
+
     <PackageVersion Include="FSharp.Core" Version="10.1.300" />
   </ItemGroup>
 </Project>

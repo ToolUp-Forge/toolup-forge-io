@@ -28,6 +28,13 @@ content/docs/
 # Recreated on next boot; never source.
 data/
 
+# Farmer's working directory — ARM-template intermediate output; not source.
+.farmer/
+
+# Local publish output + deploy bundle — produced by Bundle / Deploy targets.
+publish/
+bundle.zip
+
 # Node
 node_modules/
 

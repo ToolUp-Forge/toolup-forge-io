@@ -36,9 +36,18 @@
         Copy markdown content + static assets to the output folder so the
         runtime's `ContentRoot "content"` and the static-files middleware
         resolve against paths relative to the working directory.
+        `CopyToPublishDirectory` is the publish-specific twin of
+        `CopyToOutputDirectory` — without it, `dotnet publish` produces
+        an empty content/ + wwwroot/ shell (a defect the bin/Debug output
+        doesn't surface because `dotnet build` honours both attributes).
     -->
     <ItemGroup>
-        <None Include="..\..\content\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="content" />
-        <None Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="..\..\content\**\*"
+              CopyToOutputDirectory="PreserveNewest"
+              CopyToPublishDirectory="PreserveNewest"
+              LinkBase="content" />
+        <None Include="wwwroot\**\*"
+              CopyToOutputDirectory="PreserveNewest"
+              CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>
