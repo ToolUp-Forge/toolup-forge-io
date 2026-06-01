@@ -35,6 +35,13 @@ data/
 publish/
 bundle.zip
 
+# Launcher artefacts — durable PID file + redirected stdout / stderr logs
+# of the background server process. Recreated on every launch.
+.toolup-forge-io-pids
+toolup-forge-io-server.log
+toolup-forge-io-server.log.err
+*.log.locked-*
+
 # Node
 node_modules/
 

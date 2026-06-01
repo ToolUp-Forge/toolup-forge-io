@@ -1,106 +1,131 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-    Universal entry point for toolup-forge-io. One command starts the
-    Tailwind build + the dotnet server, serving the site on
-    http://localhost:13940/.
+  toolup-forge-io entry point: bring up the server (SSR-only Kestrel
+  on port 13940) and print the browser URL. The server runs in the
+  background; the prompt returns immediately.
 
 .DESCRIPTION
-    Stage-1 shape per the workspace `run.ps1` mandate
-    (../CLAUDE.md "Every new sibling app ships a run.ps1 at its repo root").
-    Wraps the standard build + run sequence so contributors can drop into
-    the repo and `pwsh ./run.ps1` without remembering tool-restore /
-    Tailwind-compile / dotnet-run incantations.
+  Stage-1+ shape per the workspace `CLAUDE.md` "Every new sibling app
+  ships a run.ps1" mandate. Thin pass-through to
+  `dev-scripts/launch-toolup-forge-io.ps1`, which orchestrates the
+  pre-flight stale-process sweep, the SyncDocs + Tailwind build, the
+  dotnet build, and the background server start.
 
-.PARAMETER SkipFormat
-    Skip the Fantomas check before build. Use when iterating on a known-good
-    formatted state to shave a few seconds off the inner loop.
+  Three modes:
 
-.PARAMETER SkipBuild
-    Skip the dotnet build pass. Implies SkipFormat. Use when launching
-    against an already-built bin/ to skip MSBuild evaluation entirely.
+    pwsh ./run.ps1                  # default — launch the server and
+                                    #           leave it running in the
+                                    #           background
+    pwsh ./run.ps1 -Check           # verify-only — tool restore +
+                                    #           fantomas check + build,
+                                    #           no server start
+    pwsh ./run.ps1 -StopOnly        # sweep stale dotnet processes from
+                                    #           prior runs and exit
 
-.PARAMETER SkipTailwind
-    Skip the Tailwind CSS compile. Use when the site CSS is current and the
-    edit is server-side-only.
+  The website is SSR-only (no Fable, no Vite), so launch is a single
+  process and the URL is the Kestrel server directly:
+
+    http://localhost:13940
+
+.EXAMPLE
+  pwsh ./run.ps1
+
+  Full happy path: pre-flight cleanup, SyncDocs + Tailwind, build,
+  server start, /health probe, browser URL. Returns to the prompt with
+  the server running.
+
+.EXAMPLE
+  pwsh ./run.ps1 -Check
+
+  Verify: fantomas check + dotnet build. No server start. Same
+  invocation as in CI.
+
+.EXAMPLE
+  pwsh ./run.ps1 -StopOnly
+
+  Kill any toolup-forge-io processes from a prior launch.
+
+.EXAMPLE
+  pwsh ./run.ps1 -SkipBuild -SkipTailwind
+
+  Fastest possible restart: skips everything except the pre-flight
+  sweep, the server start, and the /health probe. Use when you're
+  iterating purely on content/*.md files (which are re-read on each
+  request) and the server binary is already built.
 #>
-
 [CmdletBinding()]
 param(
+    # Verify-only mode (no server start).
+    [switch] $Check,
+    # Skip the Fantomas format check.
     [switch] $SkipFormat,
+    # Skip the dotnet build pass.
     [switch] $SkipBuild,
-    [switch] $SkipTailwind
+    # Skip SyncDocs + Tailwind. Implies the existing wwwroot/css/site.css
+    # and content/docs/ are current.
+    [switch] $SkipTailwind,
+    # How long to wait for the server's first /health 200.
+    [int] $TimeoutSeconds,
+    # Sweep stale processes and exit.
+    [switch] $StopOnly
 )
 
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
-# Sibling launcher conventions (../CLAUDE.md "Sibling launcher conventions
-# (mandate)"). Node 22.x npm.ps1 / npx.ps1 mangle args when invoked from
-# inside another .ps1 via `& npm`; Invoke-Npm / Invoke-Npx skip the shim
-# by resolving npm.cmd / npx.cmd directly.
-function Invoke-Npm {
-    [CmdletBinding()]
-    param([Parameter(ValueFromRemainingArguments = $true)] $Arguments)
-    $cmd = Get-Command npm.cmd -CommandType Application -ErrorAction Stop
-    & $cmd.Source @Arguments
-}
-
-function Invoke-Npx {
-    [CmdletBinding()]
-    param([Parameter(ValueFromRemainingArguments = $true)] $Arguments)
-    $cmd = Get-Command npx.cmd -CommandType Application -ErrorAction Stop
-    & $cmd.Source @Arguments
-}
-
-Write-Host ""
-Write-Host "==> toolup-forge-io ==> bootstrapping..." -ForegroundColor Cyan
-Write-Host ""
-
-# 1. dotnet tool restore (Fantomas + FAKE)
-Write-Host "==> dotnet tool restore" -ForegroundColor Cyan
-dotnet tool restore
-if ($LASTEXITCODE -ne 0) { throw "dotnet tool restore failed" }
-
-# 2. npm install (Tailwind CLI + autoprefixer). Skipped under -SkipTailwind.
-if (-not $SkipTailwind) {
-    if (-not (Test-Path "./node_modules")) {
+# ─── -Check: verify-only mode (fantomas + build) ─────────────────────
+if ($Check) {
+    function Write-Step {
+        param([string] $message)
         Write-Host ""
-        Write-Host "==> npm install (Tailwind + postcss)" -ForegroundColor Cyan
-        Invoke-Npm install --no-fund --no-audit
-        if ($LASTEXITCODE -ne 0) { throw "npm install failed" }
+        Write-Host "── $message ──────────────────────────────────────────────" -ForegroundColor Cyan
+    }
+
+    Write-Step "dotnet tool restore"
+    dotnet tool restore
+    if ($LASTEXITCODE -ne 0) { Write-Error "dotnet tool restore failed (exit $LASTEXITCODE)"; exit $LASTEXITCODE }
+
+    if (-not $SkipFormat) {
+        Write-Step "fantomas --check"
+        dotnet fantomas --check src/ Build.fs
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Fantomas check failed — run 'dotnet fantomas src/ Build.fs' to format in place."
+            exit $LASTEXITCODE
+        }
+    }
+
+    if (-not $SkipBuild) {
+        Write-Step "dotnet build toolup-forge-io.sln"
+        dotnet build toolup-forge-io.sln --nologo
+        if ($LASTEXITCODE -ne 0) { Write-Error "Build failed (exit $LASTEXITCODE)"; exit $LASTEXITCODE }
+    }
+
+    Write-Host ""
+    Write-Host "✓ Verify passed." -ForegroundColor Green
+    exit 0
+}
+
+# ─── Default: delegate to the launcher ───────────────────────────────
+$inner = Join-Path $PSScriptRoot "dev-scripts/launch-toolup-forge-io.ps1"
+
+if (-not (Test-Path $inner)) {
+    Write-Error "Expected launcher not found at $inner"
+    exit 1
+}
+
+# Forward only the switches the caller actually passed (so the inner
+# script's own defaults apply otherwise). Hashtable splatting binds by
+# NAME — array splatting is positional and would mis-bind.
+$splat = @{}
+foreach ($name in $PSBoundParameters.Keys) {
+    if ($name -in @('SkipBuild', 'SkipTailwind', 'SkipFormat', 'TimeoutSeconds', 'StopOnly')) {
+        $splat[$name] = $PSBoundParameters[$name]
     }
 }
 
-# 3. Fantomas format check on .fs files. Skipped under -SkipFormat.
-if (-not $SkipFormat -and -not $SkipBuild) {
-    Write-Host ""
-    Write-Host "==> fantomas --check src/" -ForegroundColor Cyan
-    dotnet fantomas --check src/ Build.fs
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Fantomas check failed. Run 'dotnet fantomas src/ Build.fs' to format." -ForegroundColor Red
-        throw "Fantomas check failed"
-    }
-}
-
-# 4. Tailwind compile. Skipped under -SkipTailwind.
-if (-not $SkipTailwind) {
-    Write-Host ""
-    Write-Host "==> tailwind build" -ForegroundColor Cyan
-    Invoke-Npm run build:css
-    if ($LASTEXITCODE -ne 0) { throw "Tailwind build failed" }
-}
-
-# 5. dotnet build the server project. Skipped under -SkipBuild.
-if (-not $SkipBuild) {
-    Write-Host ""
-    Write-Host "==> dotnet build" -ForegroundColor Cyan
-    dotnet build src/Server/ToolUpForge.Site.fsproj --nologo
-    if ($LASTEXITCODE -ne 0) { throw "dotnet build failed" }
-}
-
-# 6. Run the server. Ctrl+C terminates.
+Write-Host "toolup-forge-io: launching server -> dev-scripts/launch-toolup-forge-io.ps1 $(($splat.Keys | ForEach-Object { "-$_" }) -join ' ')"
 Write-Host ""
-Write-Host "==> dotnet run — serving on http://localhost:13940/" -ForegroundColor Green
-Write-Host ""
-dotnet run --project src/Server/ToolUpForge.Site.fsproj --no-build
+
+& $inner @splat
+exit $LASTEXITCODE
