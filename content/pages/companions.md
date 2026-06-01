@@ -9,7 +9,7 @@ Companions sit behind SDK interfaces. The Platform core carries no vendor SDK; e
 
 Per the SDK's [companion-authoring guide](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CLAUDE.md), every companion: takes its substrate dependencies (typically `ISecretStore`) through its `create` function — never reads env vars or config files directly; ships an `IHealthCheck` probe; registers an `IConfigValidator` for preflight when connection state is testable.
 
-Want to author a new one? See the per-area "Extending" docs: [AI](/docs/ai/extending/) · [RAG](/docs/rag/extending/) · [Forms](/docs/forms/extending/) · [Scheduling](/docs/scheduling/extending/) · [Knowledge Base](/docs/knowledge-base/extending/). Or open an issue at [github.com/ToolUp-Forge/toolup-forge](https://github.com/ToolUp-Forge/toolup-forge/issues).
+Want to author a new one? See the per-area "Extending" docs: [AI](/docs/ai/extending) · [RAG](/docs/rag/extending) · [Forms](/docs/forms/extending) · [Scheduling](/docs/scheduling/extending) · [Knowledge Base](/docs/knowledge-base/extending). Or open an issue at [github.com/ToolUp-Forge/toolup-forge](https://github.com/ToolUp-Forge/toolup-forge/issues).
 
 ## AI providers — `IAIProvider`
 
@@ -21,7 +21,7 @@ LLM providers behind one streaming + tool-calling interface. Pick by latency, co
 | [`ToolUp.AIProviders.OpenAI`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/OpenAI) | OpenAI models (GPT-4o / 4-mini / o-series) | Streaming via `stream_options.include_usage=true`. |
 | [`ToolUp.AIProviders.Gemini`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/Gemini) | Google Gemini | Phase 67 substrate. |
 
-How to compose: `ServerApp.withAIProvider` (or via the `DefaultAIProviderFactory` for multi-provider deployments). Walkthrough at [AI getting started](/docs/ai/getting-started/); contract at [AI extending](/docs/ai/extending/).
+How to compose: `ServerApp.withAIProvider` (or via the `DefaultAIProviderFactory` for multi-provider deployments). Walkthrough at [AI getting started](/docs/ai/getting-started); contract at [AI extending](/docs/ai/extending).
 
 ## Embedding providers — `IEmbeddingProvider`
 
@@ -32,7 +32,7 @@ Vector embeddings for RAG ingestion + query.
 | [`ToolUp.EmbeddingProviders.Local`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/EmbeddingProviders/Local) | In-process embeddings | Offline, no API key, no per-call cost. Dev-only — stateful across calls. |
 | [`ToolUp.EmbeddingProviders.OpenAI`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/EmbeddingProviders/OpenAI) | OpenAI's `text-embedding-3-*` models | Stateless; distributed-ready. |
 
-See [RAG extending](/docs/rag/extending/) for the contract; [Embedding providers doc](/docs/companions/embedding-providers/) for the per-provider reference.
+See [RAG extending](/docs/rag/extending) for the contract; [Embedding providers doc](/docs/companions/embedding-providers) for the per-provider reference.
 
 ## Rerankers
 
@@ -54,7 +54,7 @@ Sign-in + token issue + session lifecycle. Pick one per deployment (or none for 
 | [`ToolUp.AuthProviders.EntraExternalIdClient`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AuthProviders/EntraExternalIdClient) | Browser-side Entra External ID | Pairs with `EntraExternalId` server. |
 | [`ToolUp.AuthProviders.ClerkUI`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AuthProviders/ClerkUI) | Clerk hosted sign-in UI | Paid by Clerk; opt-in only. |
 
-See [Auth providers doc](/docs/companions/auth-providers/) for the per-IdP setup; [Auth](/docs/platform/auth/) for the SDK-side contract.
+See [Auth providers doc](/docs/companions/auth-providers) for the per-IdP setup; [Auth](/docs/platform/auth) for the SDK-side contract.
 
 ## Storage — `IBlobStorage`
 
@@ -66,7 +66,7 @@ Binary blob persistence behind one interface. Scope-aware: every read / write go
 | [`ToolUp.Storage.AzureBlobStorage`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/Storage/AzureBlobStorage) | Azure Blob Storage |
 | [`ToolUp.Storage.GoogleCloudStorage`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/Storage/GoogleCloudStorage) | Google Cloud Storage |
 
-The default in-process implementation file-backs to disk under `data/` — fine for dev, single-process production. For multi-instance, swap in a cloud companion. See [Storage providers doc](/docs/companions/storage-providers/).
+The default in-process implementation file-backs to disk under `data/` — fine for dev, single-process production. For multi-instance, swap in a cloud companion. See [Storage providers doc](/docs/companions/storage-providers).
 
 ## Vector stores — `IVectorStore`
 
@@ -76,7 +76,7 @@ For RAG vector indexes.
 |---|---|
 | [`ToolUp.VectorStores.Hnsw`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/VectorStores/Hnsw) | HNSW (Hierarchical Navigable Small World) index |
 
-Default in-process implementation is suitable up to single-machine workloads; the HNSW companion scales to millions of vectors. See [RAG concepts](/docs/rag/concepts/).
+Default in-process implementation is suitable up to single-machine workloads; the HNSW companion scales to millions of vectors. See [RAG concepts](/docs/rag/concepts).
 
 ## Audit sinks — `IAuditSink`
 
@@ -118,7 +118,7 @@ Two distinct interfaces: `INotificationChannel` is the distributed pub/sub backb
 |---|---|
 | [`ToolUp.NotificationChannels.Push.WebPush`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/NotificationChannels/Push/WebPush) | Browser Web Push (VAPID) |
 
-See [Notification channels doc](/docs/companions/notification-channels/) for the substrate contract.
+See [Notification channels doc](/docs/companions/notification-channels) for the substrate contract.
 
 ## Secrets — `ISecretStore`
 
@@ -156,7 +156,7 @@ Adapters that let an `IServerHost`-shaped app run inside a serverless platform's
 | [`ToolUp.Hosts.AzureFunctions`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/Hosts/AzureFunctions) | Azure Functions |
 | [`ToolUp.Hosts.GoogleCloudFunctions`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/Hosts/GoogleCloudFunctions) | Google Cloud Functions |
 
-Background: [Composition roots](/docs/platform/composition-roots/).
+Background: [Composition roots](/docs/platform/composition-roots).
 
 ## Infrastructure helpers
 
@@ -171,6 +171,6 @@ Not "providers" in the interface-implementation sense — companions providing i
 
 ## Distribution
 
-Every companion ships as a NuGet package on the [ToolUp-Forge GitHub Packages feed](https://github.com/orgs/ToolUp-Forge/packages?repo_name=toolup-forge). Add the feed per [Getting started](/getting-started/) and reference packages by `<PackageReference>` like any other.
+Every companion ships as a NuGet package on the [ToolUp-Forge GitHub Packages feed](https://github.com/orgs/ToolUp-Forge/packages?repo_name=toolup-forge). Add the feed per [Getting started](/getting-started) and reference packages by `<PackageReference>` like any other.
 
 Version coordinates with the platform via the `ToolUp.Sdk` meta-manifest. Bumping `<ToolUpSdkVersion>` in `Directory.Packages.props` moves every companion in lockstep.

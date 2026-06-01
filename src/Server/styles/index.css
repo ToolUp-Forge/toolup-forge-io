@@ -10,6 +10,12 @@
    a blanket `ncu -u` (update-all.ps1 rejects them by default). */
 @import "tailwindcss";
 
+/* Inter + JetBrains Mono — self-hosted via the Google Fonts CDN for v0;
+   move to local woff2 in the launch sweep (Stage 7) for privacy + perf.
+   The `@import` MUST appear before any non-import rule (CSS spec); hoisted
+   here for that reason. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
 /* The SDK shell's classes (bg-sidebar, bg-brand, text-brand-dark, …) exist
    ONLY in Fable's compiled output/ (the shell ships in the
    ToolUp.Platform.Client NuGet pkg, not the app source). v4's oxide scan
@@ -109,10 +115,6 @@
   --color-fg-emphasis: #111827;
   --color-muted: #6B7280;
 }
-
-/* Inter + JetBrains Mono — self-hosted via the Google Fonts CDN for v0;
-   move to local woff2 in the launch sweep (Stage 7) for privacy + perf. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /* Smooth scroll for in-page anchor links (table of contents, heading
    jumps). Honours users with reduced-motion preference. */

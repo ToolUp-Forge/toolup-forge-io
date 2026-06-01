@@ -64,7 +64,7 @@ The shape mirrors `samples/HelloWorld/` — copy that as the reference.
 </Project>
 ```
 
-`ToolUp.Sdk` is a meta-manifest — adding it propagates `<PackageVersion>` entries for every `ToolUp.*` package at the same version. Bumping the whole SDK is a one-line edit. The meta-package is described under [Architecture](/docs/platform/architecture/).
+`ToolUp.Sdk` is a meta-manifest — adding it propagates `<PackageVersion>` entries for every `ToolUp.*` package at the same version. Bumping the whole SDK is a one-line edit. The meta-package is described under [Architecture](/docs/platform/architecture).
 
 ## 4. Minimum server composition root
 
@@ -96,11 +96,11 @@ What this does:
 - Adds the `Hello` module's `ServerModule` to the registry.
 - Runs Giraffe over ASP.NET Core on port 5000.
 
-The full composition surface is in [Composition roots](/docs/platform/composition-roots/). Why each field matters in `ServerConfig` is in [Surfaces](/docs/platform/surfaces/).
+The full composition surface is in [Composition roots](/docs/platform/composition-roots). Why each field matters in `ServerConfig` is in [Surfaces](/docs/platform/surfaces).
 
 ## 5. Minimum module (the 4-file pattern)
 
-`modules/Hello/` ships four files. Full convention is in [Modules](/docs/platform/modules/); minimum shape:
+`modules/Hello/` ships four files. Full convention is in [Modules](/docs/platform/modules); minimum shape:
 
 ```fsharp
 // SharedTypes.fs — record types crossing the wire
@@ -190,24 +190,24 @@ The three-terminal loop is the fast-iteration setup; a single `dotnet run -- Run
 
 | Layer | What it does | Where to read |
 |---|---|---|
-| `ServerApp.run` | Stands up Giraffe + ASP.NET Core, wires default interfaces, mounts `/api/<module>/...` routes for every registered `ServerModule`, mounts auth + platform-admin + health-check surfaces. | [Composition roots](/docs/platform/composition-roots/) |
-| `Hello.Server.register ()` | Returns a `ServerModule` carrying the `HelloApi` record. `ServerApp.addModules` mounts its handlers under `/api/Hello/`. | [Modules](/docs/platform/modules/) |
-| `Client.run` | Stands up the Elmish runtime, mounts the SDK shell (sidebar, top bar, modals, toast centre, side panel), wires `AuthUIProvider`, attaches every registered `ClientModule`. | [Modules](/docs/platform/modules/) |
-| `Fable.Remoting` (the wire) | Auto-generates a typed proxy from the `HelloApi` record. The client calls `api.DoThing "foo"` and the server handler runs — no DTOs, no hand-rolled JSON. | [Architecture](/docs/platform/architecture/) |
-| `Mode = Individual` | Pins per-user scope isolation. Data the module persists belongs to the signed-in user. | [Surfaces](/docs/platform/surfaces/) |
+| `ServerApp.run` | Stands up Giraffe + ASP.NET Core, wires default interfaces, mounts `/api/<module>/...` routes for every registered `ServerModule`, mounts auth + platform-admin + health-check surfaces. | [Composition roots](/docs/platform/composition-roots) |
+| `Hello.Server.register ()` | Returns a `ServerModule` carrying the `HelloApi` record. `ServerApp.addModules` mounts its handlers under `/api/Hello/`. | [Modules](/docs/platform/modules) |
+| `Client.run` | Stands up the Elmish runtime, mounts the SDK shell (sidebar, top bar, modals, toast centre, side panel), wires `AuthUIProvider`, attaches every registered `ClientModule`. | [Modules](/docs/platform/modules) |
+| `Fable.Remoting` (the wire) | Auto-generates a typed proxy from the `HelloApi` record. The client calls `api.DoThing "foo"` and the server handler runs — no DTOs, no hand-rolled JSON. | [Architecture](/docs/platform/architecture) |
+| `Mode = Individual` | Pins per-user scope isolation. Data the module persists belongs to the signed-in user. | [Surfaces](/docs/platform/surfaces) |
 
 ## Next — pick what to add
 
-- **An AI assistant** — drop in `ToolUp.AI.{Server,Client}` + an `IAIProvider` companion. Walkthrough at [AI getting started](/docs/ai/getting-started/).
-- **Retrieval-augmented generation** — `+ ToolUp.RAG` + `ToolUp.KnowledgeBase`. [RAG getting started](/docs/rag/getting-started/).
-- **A schema-driven form** — `+ ToolUp.Forms.{Server,Client}`. [Forms getting started](/docs/forms/getting-started/).
-- **An auth provider** — pick from [Auth providers](/docs/companions/auth-providers/) (Microsoft Entra, generic OIDC, Auth0, etc.) and call `ServerApp.withAuth`.
-- **Cloud storage** — pick a [storage provider](/docs/companions/storage-providers/) (AWS S3, Azure Blob, Google Cloud) and call `ServerApp.withStorage`.
+- **An AI assistant** — drop in `ToolUp.AI.{Server,Client}` + an `IAIProvider` companion. Walkthrough at [AI getting started](/docs/ai/getting-started).
+- **Retrieval-augmented generation** — `+ ToolUp.RAG` + `ToolUp.KnowledgeBase`. [RAG getting started](/docs/rag/getting-started).
+- **A schema-driven form** — `+ ToolUp.Forms.{Server,Client}`. [Forms getting started](/docs/forms/getting-started).
+- **An auth provider** — pick from [Auth providers](/docs/companions/auth-providers) (Microsoft Entra, generic OIDC, Auth0, etc.) and call `ServerApp.withAuth`.
+- **Cloud storage** — pick a [storage provider](/docs/companions/storage-providers) (AWS S3, Azure Blob, Google Cloud) and call `ServerApp.withStorage`.
 
 ## When it doesn't work
 
 - **Restore fails with 401.** Set `GITHUB_PACKAGES_USER` + `GITHUB_PACKAGES_TOKEN` per the prerequisites above. If you already use `gh` CLI, `gh auth refresh -s read:packages && gh auth token` gives you a token that works.
-- **Fable can't find `ClientModule.register`.** Make sure your Client project includes `<PackageReference Include="ToolUp.Platform.Client" />` and the Fable source-extraction directive in the SDK's `.Client.props` is being honoured. The [Architecture doc](/docs/platform/architecture/) covers the source-in-nupkg pattern.
-- **Client compiles but the sidebar is empty.** The module's `register ()` is not being called from `Client.fs`, or the module's view is returning `(Html.div [], Html.div [])` (the right-pane / left-pane tuple). See [Modules](/docs/platform/modules/).
+- **Fable can't find `ClientModule.register`.** Make sure your Client project includes `<PackageReference Include="ToolUp.Platform.Client" />` and the Fable source-extraction directive in the SDK's `.Client.props` is being honoured. The [Architecture doc](/docs/platform/architecture) covers the source-in-nupkg pattern.
+- **Client compiles but the sidebar is empty.** The module's `register ()` is not being called from `Client.fs`, or the module's view is returning `(Html.div [], Html.div [])` (the right-pane / left-pane tuple). See [Modules](/docs/platform/modules).
 
 If you're stuck, [GitHub Discussions](https://github.com/ToolUp-Forge/toolup-forge/discussions) is the place to ask.

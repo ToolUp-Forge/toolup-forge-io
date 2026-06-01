@@ -27,7 +27,7 @@ Refactoring a record field changes both ends at once. Renaming a function on the
 
 > Why this is load-bearing: the typical full-stack pain is the contract layer between languages — OpenAPI, gRPC, GraphQL, hand-written DTOs. Each is a place where the server's understanding can drift from the client's. F# end-to-end deletes the seam.
 
-Background: [Architecture](/docs/platform/architecture/).
+Background: [Architecture](/docs/platform/architecture).
 
 ## Elmish MVU on the client — pure, predictable
 
@@ -40,7 +40,7 @@ Every module is a small Model / Msg / `init` / `update` / `view` Elmish unit. `u
 
 The trade is real: contributors fluent in React-hooks-with-state-libraries find Elmish takes a week to feel natural. The payoff is a predictable client codebase even at the size where a hook-heavy React app has become spooky-action-at-a-distance. Forge's [client conventions](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CLAUDE.md) describe the discipline a contributor adopts.
 
-Background: [Modules](/docs/platform/modules/).
+Background: [Modules](/docs/platform/modules).
 
 ## Companion packages isolate vendors
 
@@ -57,9 +57,9 @@ Two consequences:
 1. **No paid-by-default dependencies.** The default composition runs on freely-available components. Paid / enterprise components (AG Grid Enterprise, hosted auth UIs) are opt-in companions a deployment explicitly chooses.
 2. **Vendors are interchangeable.** Swapping S3 for Azure Blob is a `<PackageReference>` change plus a `ServerApp.withStorage` line. No code outside the composition root moves.
 
-Browse the full [companion catalogue](/companions/) for the current set.
+Browse the full [companion catalogue](/companions) for the current set.
 
-Background: [Auth providers](/docs/companions/auth-providers/) · [Storage providers](/docs/companions/storage-providers/).
+Background: [Auth providers](/docs/companions/auth-providers) · [Storage providers](/docs/companions/storage-providers).
 
 ## The six portability rules
 
@@ -76,7 +76,7 @@ Conformance test packs (`IJobSchedulerContract`, `IModuleQueryBusContract`, `ISh
 
 This is unusually strict for an SDK of this shape. The reason: a small-deployment in-process implementation and a large-deployment distributed implementation must look the same to consumer code. Six rules satisfied at the interface level keeps that promise.
 
-Background: [Portability rules](/docs/platform/portability-rules/).
+Background: [Portability rules](/docs/platform/portability-rules).
 
 ## Schema-driven, not framework-driven
 
@@ -84,7 +84,7 @@ CRUD-heavy intake-and-approval flows — surveys, applications, forms with valid
 
 The trade vs a hand-rolled form library: less per-form customisation, more per-form productivity. For an app that needs 30 forms, this is unambiguously the right shape; for an app that needs three highly custom forms, less so.
 
-Background: [Forms concepts](/docs/forms/concepts/).
+Background: [Forms concepts](/docs/forms/concepts).
 
 ## Multi-tenant by construction
 
@@ -96,15 +96,15 @@ Scope isolation, RBAC, per-tenant data scoping, and audit trail are first-class 
 - `Team` — team-scoped, persistent — multi-user organisations, one team per user.
 - `MultiTeam` — active-team-scoped, persistent — users belong to many teams and switch in-session.
 
-Both server (`ServerConfig.Mode`) and client (`ClientConfig.Mode`) must agree at compile time. When they don't, the SDK fails loudly rather than rendering a half-authenticated shell. The 2026-05 [Surfaces compile-time precedence finding](/docs/migrations/0.X.0-platform-mode-to-surfaces/) made this explicit.
+Both server (`ServerConfig.Mode`) and client (`ClientConfig.Mode`) must agree at compile time. When they don't, the SDK fails loudly rather than rendering a half-authenticated shell. The 2026-05 [Surfaces compile-time precedence finding](/docs/migrations/0.X.0-platform-mode-to-surfaces) made this explicit.
 
-Background: [Surfaces](/docs/platform/surfaces/).
+Background: [Surfaces](/docs/platform/surfaces).
 
 ## Backward-compatible defaults
 
 A new SDK feature defaults to off / to its prior behaviour. A deployment that upgrades stays byte-for-byte identical until it explicitly opts in. `fromEnv` helpers and config records preserve prior dispatch behaviour exactly. This means SDK minor-bump upgrades aren't an outage class.
 
-Conversely: when a breaking change is necessary (the Forms substrate rewrite, the Elmish 0.4.x adoption, the AI provider substrate refresh), a migration doc lands under [`docs/migrations/`](/docs/) with before/after diffs, verification steps, and rollback. The migration is the explicit ask; the default-preserving path is the silent one.
+Conversely: when a breaking change is necessary (the Forms substrate rewrite, the Elmish 0.4.x adoption, the AI provider substrate refresh), a migration doc lands under [`docs/migrations/`](/docs) with before/after diffs, verification steps, and rollback. The migration is the explicit ask; the default-preserving path is the silent one.
 
 ## Type erasure stays inside two boundaries
 
@@ -134,8 +134,8 @@ If your app is:
 
 In exchange for the multi-tenant infrastructure, the AI / RAG / Forms / Scheduling companions, and the typed-wire ergonomics:
 
-- **A learning curve.** Composition roots, module convention, scope resolution, the surface DU, premium claims — there's vocabulary. The [Getting started](/getting-started/) walkthrough flattens the worst of it.
+- **A learning curve.** Composition roots, module convention, scope resolution, the surface DU, premium claims — there's vocabulary. The [Getting started](/getting-started) walkthrough flattens the worst of it.
 - **F# adoption cost.** Hiring an F# team is harder than hiring a TypeScript team. Mitigated if your existing team writes F# (or wants to); painful if not.
-- **A pre-1.0 surface.** Breaking changes ship in 0.x minor releases per [SemVer-on-0.x](/docs/platform/architecture/). Migration docs accompany each.
+- **A pre-1.0 surface.** Breaking changes ship in 0.x minor releases per [SemVer-on-0.x](/docs/platform/architecture). Migration docs accompany each.
 
-If the trade is right for you, the next step is [Getting started](/getting-started/). If not, that's useful information too.
+If the trade is right for you, the next step is [Getting started](/getting-started). If not, that's useful information too.

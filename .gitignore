@@ -23,6 +23,11 @@ src/Server/wwwroot/pagefind/
 # at build time, never edited in this repo).
 content/docs/
 
+# Runtime data — the SDK default IEntityStore / IBlobStorage / file-secret-
+# store all root here on first request when no cloud companion is wired.
+# Recreated on next boot; never source.
+data/
+
 # Node
 node_modules/
 

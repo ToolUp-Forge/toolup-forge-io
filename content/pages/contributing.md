@@ -59,7 +59,7 @@ The forge repo distinguishes **first-party** (maintained by the core team, ship 
 
 When you propose a new companion or module, the [Promotion from community to first-party](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CONTRIBUTING.md#promotion-from-community-to-first-party) section describes the bar. Briefly:
 
-- The companion satisfies the [six portability rules](/docs/platform/portability-rules/) where applicable.
+- The companion satisfies the [six portability rules](/docs/platform/portability-rules) where applicable.
 - A README + tests ship alongside.
 - The contributor commits to a year-1 maintenance window (security + critical bug fixes; major-version refactors can be re-negotiated).
 
@@ -71,10 +71,10 @@ Briefly — the canonical reference is [`CLAUDE.md`](https://github.com/ToolUp-F
 
 - **F# 10 on .NET 10.** SDK pin is `10.0.203` (`rollForward: latestFeature`).
 - **Fantomas** is the formatter. Run `dotnet fantomas <file>` BEFORE `dotnet build`. PRs failing the format check are rejected — fix locally, push the format-only commit, re-request review.
-- **Immutable by default.** Records, no mutable fields without justification. The [Guiding Principles](/docs/platform/architecture/) — referenced as `(GP NN)` in source comments — are the canon.
+- **Immutable by default.** Records, no mutable fields without justification. The [Guiding Principles](/docs/platform/architecture) — referenced as `(GP NN)` in source comments — are the canon.
 - **Elmish MVU discipline.** `update` functions are pure. All side effects flow through `Cmd`. No mutable global state in client code.
 - **Modules don't reference each other.** Shared types live in shared-types files. Inter-module communication uses persisted data or events, never imports.
-- **Six portability rules** for distributed-implementation interfaces. See [Portability rules](/docs/platform/portability-rules/).
+- **Six portability rules** for distributed-implementation interfaces. See [Portability rules](/docs/platform/portability-rules).
 - **The two type-erasure boundaries** (`ClientModule.register` + `DataTypeDisplay.RenderSummary`) are sanctioned; other `box` / `unbox` usage isn't.
 
 ## Documentation contributions

@@ -13,11 +13,11 @@ slug: /about/
 - **Contributor agreement:** [Developer Certificate of Origin](https://developercertificate.org/) (DCO). Every commit carries a `Signed-off-by:` line. CI enforces this.
 - **Code of Conduct:** [Contributor Covenant v2.1](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CODE_OF_CONDUCT.md).
 - **Security disclosure:** private channels only — see [`SECURITY.md`](https://github.com/ToolUp-Forge/toolup-forge/blob/main/SECURITY.md) for the contact path.
-- **Versioning:** pre-release `0.x.y` with SemVer-on-`0.x` policy — minor bumps may include breaking changes; patch bumps stay non-breaking. `1.0.0` lands once the public surface is judged stable. [Migration docs](/docs/) ship alongside every breaking change.
+- **Versioning:** pre-release `0.x.y` with SemVer-on-`0.x` policy — minor bumps may include breaking changes; patch bumps stay non-breaking. `1.0.0` lands once the public surface is judged stable. [Migration docs](/docs) ship alongside every breaking change.
 
 ## Who maintains it
 
-The project is maintained by [Andrew J. Willshire](https://github.com/ajwillshire) with a co-owner reviewer. Issues and pull requests are welcome from anyone; the [Contributing guide](/contributing/) describes the flow.
+The project is maintained by [Andrew J. Willshire](https://github.com/ajwillshire) with a co-owner reviewer. Issues and pull requests are welcome from anyone; the [Contributing guide](/contributing) describes the flow.
 
 If you want to maintain a companion package (a new auth provider, storage backend, audit sink, etc.) as part of the core distribution, open an issue or discussion first to align on shape — companion authoring is a documented pattern with portability constraints, and a draft PR conversation is cheaper than rework. See [companion-authoring](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CLAUDE.md#companion-authoring-guide) in the contributor doc.
 
@@ -43,7 +43,7 @@ The SDK shape — modular companion packages, schema-driven modules, multi-tenan
 
 ## This site
 
-[`toolup-forge.io`](https://toolup-forge.io/) is the project's public website. It is **server-side-rendered F#** using the [`ToolUp.PublicRendering`](/companions/) companion — every page you're reading is rendered through Giraffe.ViewEngine by an SDK consumer. The source is open at [`github.com/toolup-forge/toolup-forge-io`](https://github.com/toolup-forge/toolup-forge-io); the documentation tree is synced from [`toolup-forge/docs/`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/docs) on every deploy.
+[`toolup-forge.io`](https://toolup-forge.io/) is the project's public website. It is **server-side-rendered F#** using the [`ToolUp.PublicRendering`](/companions) companion — every page you're reading is rendered through Giraffe.ViewEngine by an SDK consumer. The source is open at [`github.com/toolup-forge/toolup-forge-io`](https://github.com/toolup-forge/toolup-forge-io); the documentation tree is synced from [`toolup-forge/docs/`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/docs) on every deploy.
 
 If you want a reference implementation of an SSR-only `toolup-forge` consumer, this is one. The repo is small enough to read end to end.
 

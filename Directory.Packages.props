@@ -6,7 +6,7 @@
       ToolUp.* package moves in lockstep. Tracks the toolup-forge
       release cadence; refresh on every public SDK bump.
     -->
-    <ToolUpSdkVersion>0.3.6</ToolUpSdkVersion>
+    <ToolUpSdkVersion>0.4.4</ToolUpSdkVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- ToolUp SDK packages tracked by ToolUpSdkVersion above. The site
