@@ -54,22 +54,51 @@ let private siteHeader =
                           [ str "GitHub" ] ] ] ]
 
 let private siteFooter =
+    // "Powered by ToolUp Forge" — the canonical attribution every
+    // ToolUp-built website renders, mirroring the SDK shell's sidebar
+    // footer convention. The official forge wordmark (icon-mark
+    // brackets-around-mark + "ToolUp /forge" wordmark, light-background
+    // variant from Brand Assets/logos/iconset/repo/) is the visible
+    // mark; "Powered by" is the small leading label. Consumers who
+    // fork their layout can keep, vary, or remove the badge per their
+    // own brand posture (it's a default, not a licence term).
     footer
         [ _class "border-t border-border bg-surface mt-16" ]
         [ div
-              [ _class "mx-auto max-w-7xl px-6 py-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" ]
-              [ div
-                    [ _class "text-sm text-muted" ]
-                    [ str "Built with "
-                      a
-                          [ _href "https://github.com/ToolUp-Forge/toolup-forge"
-                            _class "text-brand hover:text-brand-dark underline-offset-2 hover:underline" ]
-                          [ str "toolup-forge" ]
-                      str " · Apache 2.0" ]
+              [ _class "mx-auto max-w-7xl px-6 py-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between" ]
+              [ a
+                    [ _href "/"
+                      _title "Powered by ToolUp Forge"
+                      _class
+                          "flex items-center gap-3 text-sm text-muted hover:text-fg-emphasis transition-colors no-underline" ]
+                    [ span [ _class "uppercase tracking-wider text-xs" ] [ str "Powered by" ]
+                      // The two transparent wordmark variants ship together
+                      // so the badge tracks `prefers-color-scheme` without a
+                      // CSS-controlled image swap. Picture-element fallback:
+                      // a browser that doesn't understand <picture> reads
+                      // the inner <img> directly — i.e. the dark-text
+                      // (light-mode) variant, which is the right default
+                      // since the site is light-only today.
+                      picture
+                          []
+                          [ source
+                                [ _media "(prefers-color-scheme: dark)"
+                                  _srcset "/repo/icon-wordmark-transparent-1024.png" ]
+                            img
+                                [ _src "/repo/icon-wordmark-transparent-dark-text-1024.png"
+                                  _alt "ToolUp Forge"
+                                  _class "h-12 w-auto"
+                                  _width "48"
+                                  _height "48" ] ]
+                      span [ _class "text-muted/70 hidden sm:inline" ] [ str "· Apache 2.0" ] ]
                 nav
-                    [ _class "flex gap-4 text-sm text-muted" ]
+                    [ _class "flex flex-wrap gap-4 text-sm text-muted" ]
                     [ a [ _href "/sitemap.xml"; _class "hover:text-brand" ] [ str "Sitemap" ]
                       a [ _href "/about"; _class "hover:text-brand" ] [ str "About" ]
+                      a
+                          [ _href "https://github.com/ToolUp-Forge/toolup-forge"
+                            _class "hover:text-brand" ]
+                          [ str "GitHub" ]
                       a
                           [ _href "https://github.com/ToolUp-Forge/toolup-forge/blob/main/CODE_OF_CONDUCT.md"
                             _class "hover:text-brand" ]
@@ -87,6 +116,18 @@ let render (page: PublicPage) (bodyClasses: string) (bodyContent: XmlNode) : Xml
                 meta [ _name "viewport"; _content "width=device-width, initial-scale=1" ]
                 title [] [ str (sprintf "%s — toolup-forge" page.Title) ]
                 meta [ _name "description"; _content page.Description ]
+
+                // `<meta name="generator">` — the standard HTML convention
+                // for declaring what built this page. Indexed by
+                // Wappalyzer / BuiltWith / etc., so any site running
+                // `ToolUp.PublicRendering` is discoverable as a forge
+                // consumer without anything visible on the page itself.
+                // Pairs with the visible "Powered by ToolUp Forge" footer:
+                // visible for humans, meta tag for crawlers + tooling.
+                // Will move into the SDK substrate (default emitted by
+                // `ToolUp.PublicRendering` directly) in a future forge
+                // bump; declared explicitly here for now.
+                meta [ _name "generator"; _content "ToolUp Forge — toolup-forge.io" ]
 
                 // OpenGraph / Twitter card. Default OG image is the forge
                 // social-preview banner (1280×640, horizontal lockup
