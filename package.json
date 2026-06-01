@@ -1,0 +1,14 @@
+{
+    "name": "toolup-forge-io",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Build-tooling for toolup-forge.io. Tailwind v4 + pagefind only — no JS source files in the site itself.",
+    "scripts": {
+        "build:css": "tailwindcss -i ./src/Server/styles/index.css -o ./src/Server/wwwroot/css/site.css --minify",
+        "watch:css": "tailwindcss -i ./src/Server/styles/index.css -o ./src/Server/wwwroot/css/site.css --watch"
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "4.3.0",
+        "tailwindcss": "4.3.0"
+    }
+}

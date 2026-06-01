@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FAKE driver for toolup-forge-io. Targets:
+      Format        — fantomas across src/ + Build.fs
+      Tailwind      — compile src/Server/styles/index.css -> wwwroot/css/site.css
+      SyncDocs      — copy ../toolup-forge/docs/ -> content/docs/, with the
+                      OSS publication-boundary deny-list enforced
+      Build         — dotnet build the solution
+      Run           — Tailwind ⇒ Build ⇒ run the server
+      Verify        — format check ⇒ SyncDocs ⇒ Tailwind ⇒ Build (CI shape)
+      Publish       — dotnet publish for the deploy target
+
+    Invoke from the repo root: `dotnet run` for the default Run target,
+    or `dotnet run` with a target argument to run a specific FAKE target.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>ToolUpForge.Site.Build</RootNamespace>
+        <AssemblyName>ToolUpForge.Site.Build</AssemblyName>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Build.fs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Fake.Core.Target" />
+        <PackageReference Include="Fake.IO.FileSystem" />
+        <PackageReference Include="Fake.DotNet.Cli" />
+        <PackageReference Include="FSharp.Core" />
+    </ItemGroup>
+</Project>

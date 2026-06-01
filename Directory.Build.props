@@ -1,0 +1,18 @@
+<Project>
+  <!--
+    Repo-wide MSBuild defaults. Imported automatically by every project
+    under this directory before the project's own .fsproj is evaluated.
+
+    This site is NOT a publishable SDK consumer — every project sets
+    <IsPackable>false</IsPackable>. The Apache-2.0 / DCO / Code-of-Conduct
+    posture mirrors toolup-forge, but no nupkg artefacts are produced
+    here; deployment ships an `Publish` output, not packages.
+  -->
+  <PropertyGroup>
+    <Authors>Andrew J. Willshire</Authors>
+    <Copyright>Copyright (c) Andrew J. Willshire</Copyright>
+    <RepositoryUrl>https://github.com/toolup-forge/toolup-forge-io</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+</Project>

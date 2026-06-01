@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    toolup-forge-io — production website composition root. Website-class
+    deployment per the workspace port-class mandate: SSR-only, no Fable
+    client, no AI, no modules. Consumes ToolUp.* from the toolup-forge
+    GitHub Packages feed (steady-state) or ../local-nuget-feed (iteration).
+
+    Modelled on toolup-forge/samples/PublicSite/PublicSite.fsproj (the
+    Phase 38 in-tree reference), with three additions: a wwwroot/ for
+    static assets (compiled Tailwind, favicon, og image), an additional
+    DocLayout for the docs side-nav surface, and a content/docs/ tree
+    populated by the SyncDocs build target.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>ToolUpForge.Site</RootNamespace>
+        <AssemblyName>ToolUpForge.Site</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Layouts\BaseLayout.fs" />
+        <Compile Include="Layouts\PageLayout.fs" />
+        <Compile Include="Layouts\DocLayout.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ToolUp.Platform.Core" />
+        <PackageReference Include="ToolUp.Platform.Server" />
+        <PackageReference Include="ToolUp.PublicRendering" />
+        <PackageReference Include="Giraffe.ViewEngine" />
+        <PackageReference Include="FSharp.Core" />
+        <PackageReference Include="Fable.Remoting.Json" />
+    </ItemGroup>
+    <!--
+        Copy markdown content + static assets to the output folder so the
+        runtime's `ContentRoot "content"` and the static-files middleware
+        resolve against paths relative to the working directory.
+    -->
+    <ItemGroup>
+        <None Include="..\..\content\**\*" CopyToOutputDirectory="PreserveNewest" LinkBase="content" />
+        <None Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+</Project>

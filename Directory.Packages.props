@@ -1,0 +1,32 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!--
+      Coordinated SDK version. Bump one place and every transitive
+      ToolUp.* package moves in lockstep. Tracks the toolup-forge
+      release cadence; refresh on every public SDK bump.
+    -->
+    <ToolUpSdkVersion>0.3.6</ToolUpSdkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- ToolUp SDK packages tracked by ToolUpSdkVersion above. The site
+         is SSR-only in v0, so we don't need ToolUp.Platform.Client. -->
+    <PackageVersion Include="ToolUp.Platform.Core" Version="$(ToolUpSdkVersion)" />
+    <PackageVersion Include="ToolUp.Platform.Server" Version="$(ToolUpSdkVersion)" />
+    <PackageVersion Include="ToolUp.PublicRendering" Version="$(ToolUpSdkVersion)" />
+
+    <!-- Server stack -->
+    <PackageVersion Include="Giraffe" Version="8.2" />
+    <PackageVersion Include="Giraffe.ViewEngine" Version="1.4" />
+    <PackageVersion Include="Markdig" Version="0.42.0" />
+    <PackageVersion Include="Fable.Remoting.Json" Version="3.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+
+    <!-- Build pipeline (FAKE) -->
+    <PackageVersion Include="Fake.Core.Target" Version="6.1.4" />
+    <PackageVersion Include="Fake.IO.FileSystem" Version="6.1.4" />
+    <PackageVersion Include="Fake.DotNet.Cli" Version="6.1.4" />
+
+    <PackageVersion Include="FSharp.Core" Version="10.1.300" />
+  </ItemGroup>
+</Project>

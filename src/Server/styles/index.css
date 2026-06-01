@@ -1,0 +1,306 @@
+/* >>> @toolup/tailwind canonical — DO NOT EDIT between these markers <<<
+   Single source of truth for the ToolUp Tailwind v4 contract. Consumers
+   (toolup-app, Concord, every cookbook-apps/* cook, future apps) embed
+   this block verbatim and override ONLY their brand --color-* values in a
+   :root AFTER the end marker. check-drift.ps1 fails CI/precommit if any
+   consumer's marked region differs from this file.
+
+   Pinned toolchain (see deps.json — exact, no ^): tailwindcss 4.3.0 +
+   @tailwindcss/vite 4.3.0. These move only by editing this package, never
+   a blanket `ncu -u` (update-all.ps1 rejects them by default). */
+@import "tailwindcss";
+
+/* The SDK shell's classes (bg-sidebar, bg-brand, text-brand-dark, …) exist
+   ONLY in Fable's compiled output/ (the shell ships in the
+   ToolUp.Platform.Client NuGet pkg, not the app source). v4's oxide scan
+   honours .gitignore and does NOT use the module graph in `vite build`, so
+   the gitignored output/ is invisible to auto-detection. This @source
+   overrides the REPO-level `output/` ignore. It is NOT sufficient on its
+   own: Fable also writes output/fable_modules/.gitignore (content: two
+   chars star-star, slash, star) which @source canNOT override — a
+   MANDATORY post-Fable build step must empty/delete that nested file on
+   every compile (see README "Fable output needs @source + a build step").
+   Universal across ToolUp Fable clients: all use `dotnet fable -o output`
+   with the Vite root at the client dir, so this path is identical
+   everywhere and drift-checked. */
+@source "./output";
+
+@theme {
+  /* The six semantic tokens the ToolUp.Platform.Client shell renders
+     against (bg-brand, bg-sidebar, border-border, text-brand-dark, ...).
+     v4 auto-generates the utilities from the --color-* namespace AND
+     emits each as a :root custom property, so an app's later :root
+     override re-skins every utility at runtime with no rebuild. Apps
+     override the VALUES, never the NAMES. Defaults = toolup-app brand. */
+  --color-brand: #59229D;
+  --color-brand-dark: #371561;
+  --color-sidebar: #1A0B2E;
+  --color-bg-light: #F6F7F8;
+  --color-border: #CBCCCC;
+  --color-separator: #D1D5DB;
+
+  /* v4 changed ring defaults (width 3px->1px, color blue-500->
+     currentColor). Restore v3 so the SDK shell's + apps' existing
+     `ring`/`focus:ring` sites keep their look. (Upgrade guide §7.) */
+  --default-ring-width: 3px;
+  --default-ring-color: var(--color-blue-500);
+}
+
+/* Official v3 -> v4 compatibility base layer (upgrade guide §7). v4
+   changed several element defaults that would otherwise silently restyle
+   every consumer and the SDK shell. Deliberate, removable bridge —
+   retired incrementally in migration-plan Phase 5 alongside the
+   semantic-token cleanup. Does NOT mask two known minor deltas: the
+   shadow/rounded/blur scale was renamed one notch (cosmetic; fixed by
+   the Phase 5 class migration) and the space-y/divide selector changed
+   (migrate those sites to flex/grid `gap`). */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  dialog {
+    margin: auto;
+  }
+}
+/* >>> end @toolup/tailwind canonical <<< */
+
+/* --- toolup-forge-io specific (after canonical; safe to edit) --------- */
+
+/* Tailwind v4 content scanner — F# string literals containing class names
+   live in our Layouts/*.fs files. The default scanner only picks up web
+   file extensions, so we point it explicitly at our F# source tree. */
+@source "../Layouts/*.fs";
+@source "../*.fs";
+@source "../../../content/**/*.md";
+
+/* Website-class semantic tokens. The canonical block above defines the
+   six brand tokens (brand, brand-dark, sidebar, bg-light, border,
+   separator); these are NOT overridden — the website wants brand purple
+   for accents and brand-dark for hovers, same as toolup-app. The new
+   tokens below add the surface-class palette this OSS website needs
+   (light page background, sidebar surface, body text, muted text). */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Consolas", monospace;
+
+  /* Page surfaces — GitHub-Pages-style very-light backgrounds. `bg` is
+     the dominant page background (effectively white); `surface` is the
+     subtle inset surface for sidebars, code blocks, callouts, footer. */
+  --color-bg: #FFFFFF;
+  --color-surface: #F6F8FA;
+
+  /* Text — neutral slate-grays, accent reserved for brand purple. */
+  --color-fg: #1F2937;
+  --color-fg-emphasis: #111827;
+  --color-muted: #6B7280;
+}
+
+/* Inter + JetBrains Mono — self-hosted via the Google Fonts CDN for v0;
+   move to local woff2 in the launch sweep (Stage 7) for privacy + perf. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+/* Smooth scroll for in-page anchor links (table of contents, heading
+   jumps). Honours users with reduced-motion preference. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* --- Typography (.prose) — GitHub-Pages-style reading column ---------
+   Hand-rolled instead of @tailwindcss/typography to keep the npm
+   surface minimal + give exact control over heading rhythm + link
+   colours. Applies to <article class="prose prose-toolup">. */
+
+@layer components {
+  .prose {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-fg);
+  }
+
+  .prose > * + * {
+    margin-top: 1rem;
+  }
+
+  /* Heading hierarchy — semibold weight, darker emphasis colour, generous
+     top margin to separate sections, subtle bottom border on h2 for the
+     classic GitHub docs feel. */
+  .prose h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-fg-emphasis);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-fg-emphasis);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.375rem;
+    border-bottom: 1px solid var(--color-border);
+    letter-spacing: -0.01em;
+  }
+  .prose h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-fg-emphasis);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-fg-emphasis);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Links — brand purple, underline on hover. Visited stays brand to
+     avoid the default purple-on-purple visited-link clash. */
+  .prose a {
+    color: var(--color-brand);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 120ms;
+  }
+  .prose a:hover {
+    color: var(--color-brand-dark);
+    border-bottom-color: currentColor;
+  }
+  .prose a:visited {
+    color: var(--color-brand);
+  }
+
+  /* Inline code — subtle surface-tinted pill. */
+  .prose code:not(pre code) {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: var(--color-fg-emphasis);
+  }
+
+  /* Fenced code blocks — surface bg, code in mono, generous padding,
+     scrolls horizontally for wide lines. */
+  .prose pre {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .prose pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-fg-emphasis);
+    font-size: inherit;
+  }
+
+  /* Lists. */
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose ul {
+    list-style-type: disc;
+  }
+  .prose ol {
+    list-style-type: decimal;
+  }
+  .prose li {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .prose li > p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Blockquote — brand-left-bar, italic, muted. */
+  .prose blockquote {
+    border-left: 4px solid var(--color-brand);
+    padding-left: 1rem;
+    color: var(--color-muted);
+    font-style: italic;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Tables — full-width, bordered, alternating row tint. */
+  .prose table {
+    width: 100%;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .prose thead {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .prose th,
+  .prose td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border: 1px solid var(--color-border);
+  }
+  .prose tbody tr:nth-child(even) {
+    background-color: var(--color-surface);
+  }
+
+  /* Horizontal rule. */
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Strong / em. */
+  .prose strong {
+    font-weight: 600;
+    color: var(--color-fg-emphasis);
+  }
+  .prose em {
+    font-style: italic;
+  }
+
+  /* not-prose escape hatch — lets layouts add typography elements
+     outside the typographic rhythm (page header descriptions, footers
+     inside articles, etc.). Tailwind v4 handles this via :not selectors
+     on each rule above — instead we use a single utility class
+     `not-prose` that explicit elements opt into. */
+  .prose .not-prose,
+  .prose .not-prose * {
+    all: revert;
+  }
+}
