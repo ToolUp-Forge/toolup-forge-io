@@ -16,17 +16,20 @@ let private siteHeader =
         [ div
               [ _class "mx-auto max-w-7xl px-6 h-14 flex items-center gap-8" ]
               [
-                // Brand mark — forge iconset SVG (the ⟨ ⟩ brackets-around-mark
-                // primary logo) plus the wordmark in text. Renders crisply at
-                // any size; falls back to text if the SVG fails to load. The
-                // canonical brand assets live in the forge repo's
-                // Brand Assets/logos/iconset/ and are copied into wwwroot/
-                // verbatim.
+                // Brand mark — forge iconset transparent-background PNG
+                // (the ⟨ ⟩ brackets-around-mark primary logo) plus the
+                // wordmark in text. The PNG renders the full mark
+                // including the inner glyph; the bundled SVG variant in
+                // /svg/icon-mark.svg ships with an unfilled <image>
+                // element and renders empty between the brackets, so
+                // the PNG is the canonical web header asset. Brand
+                // assets live in the forge repo's Brand Assets/logos/
+                // iconset/ and are copied into wwwroot/ verbatim.
                 a
                     [ _href "/"
                       _class "flex items-center gap-2 text-fg-emphasis font-semibold tracking-tight" ]
                     [ img
-                          [ _src "/svg/icon-mark.svg"
+                          [ _src "/repo/icon-mark-transparent-1024.png"
                             _alt "toolup-forge"
                             _class "h-7 w-auto"
                             _width "28"

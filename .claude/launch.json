@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "toolup-forge-io",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "src/Server/ToolUpForge.Site.fsproj"],
+      "port": 13940
+    }
+  ]
+}
