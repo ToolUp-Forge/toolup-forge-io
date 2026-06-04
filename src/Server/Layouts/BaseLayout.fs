@@ -44,7 +44,12 @@ let private siteHeader =
                           [ _href "/getting-started"; _class "hover:text-brand transition-colors" ]
                           [ str "Getting started" ]
                       a [ _href "/companions"; _class "hover:text-brand transition-colors" ] [ str "Companions" ]
-                      a [ _href "/releases"; _class "hover:text-brand transition-colors" ] [ str "Releases" ] ]
+                      a
+                          [ _href "https://github.com/ToolUp-Forge/toolup-forge/releases"
+                            _target "_blank"
+                            _rel "noopener noreferrer"
+                            _class "hover:text-brand transition-colors" ]
+                          [ str "Releases" ] ]
 
                 // Right-aligned external links.
                 div

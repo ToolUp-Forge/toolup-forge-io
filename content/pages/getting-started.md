@@ -53,7 +53,7 @@ The shape mirrors `samples/HelloWorld/` — copy that as the reference.
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <ToolUpSdkVersion>0.4.0</ToolUpSdkVersion>
+    <ToolUpSdkVersion>0.5.7</ToolUpSdkVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="ToolUp.Sdk" Version="$(ToolUpSdkVersion)" />
