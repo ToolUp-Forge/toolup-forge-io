@@ -4,7 +4,7 @@ description: An open-source F# full-stack SDK for production multi-tenant analyt
 layout: page
 ---
 
-`toolup-forge` is an open-source F# full-stack SDK for building production multi-tenant analytical applications. Giraffe over ASP.NET Core for the server, Fable + Elmish + Feliz for the client, [Fable.Remoting](https://github.com/Zaid-Ajaj/Fable.Remoting) for type-safe wire — F# end to end with no DTO duplication.
+`toolup-forge` is an open-source F# full-stack SDK for building production multi-tenant analytical applications. Giraffe over ASP.NET Core for the server, Fable + Feliz with an in-tree Elmish runtime for the client, in-tree ToolUp.Remoting transport for type-safe wire — F# end to end with no DTO duplication.
 
 > **Status: pre-release (`0.x.y`).** SemVer-on-`0.x` — minor bumps may include breaking changes. `1.0.0` ships once the surface is stable.
 
@@ -65,7 +65,7 @@ That serves on `http://localhost:5000`. Add modules with `ServerApp.addModules`,
 
 ## Why F#
 
-The SDK is opinionated about F# all the way down. Shared types cross the client/server boundary via Fable.Remoting without DTO duplication. Modules are pure-MVU on the client (no in-memory state between calls), pure-handler on the server. The whole stack — server, client (via Fable), build (via FAKE) — is one language. The reasons are written up at [Why toolup-forge](/why-forge).
+The SDK is opinionated about F# all the way down. Shared types cross the client/server boundary via ToolUp.Remoting (the in-tree transport, [forked from Zaid Ajaj's Fable.Remoting](https://github.com/Zaid-Ajaj/Fable.Remoting) under MIT) without DTO duplication. Modules are pure-MVU on the client (no in-memory state between calls), pure-handler on the server. The whole stack — server, client (via Fable), build (via FAKE) — is one language. The reasons are written up at [Why toolup-forge](/why-forge).
 
 ## Built with toolup-forge
 

@@ -80,10 +80,11 @@ Or browse the full [companion catalogue](/companions) with NuGet + source links 
 
 When a release ships a consumer-facing breaking change, a migration doc lands under `docs/migrations/` with before/after, verification steps, and rollback. The latest:
 
+- [Namespace rename: `Fable.Remoting.*` → `ToolUp.Remoting.*` and `Elmish` → `ToolUp.Elmish`](/docs/migrations/73-namespace-rename-to-toolup-remoting-and-toolup-elmish) — mechanical search-and-replace across consumer code; behaviour unchanged.
 - [`0.4.0` — toolup-elmish adoption](/docs/migrations/0.4.0-toolup-elmish-adoption) — moving from `Fable.Elmish.*` to the forge-native primitives.
 - [`0.4.0` — OIDC app config](/docs/migrations/0.4.0-oidc-app-config) — auth-provider config shape change.
 - [`0.4.0` — Entra External ID deprecation](/docs/migrations/0.4.0-entra-external-id-deprecation) — switching to Entra Workforce OIDC.
-- [`0.4.x` — Phase 70 AI provider substrate](/docs/migrations/0.4.x-phase-70-ai-provider-substrate) — provider companion contract refresh.
+- [`0.4.x` — multi-platform AI provider substrate](/docs/migrations/0.4.x-phase-70-ai-provider-substrate) — provider companion contract refresh and `PlatformAIKeysApi` surface.
 - [`0.3.x` — OIDC presets](/docs/migrations/0.3.x-oidc-presets) — moving from bespoke OIDC wiring to the preset registry.
 
 The complete list is at [`docs/migrations/`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/docs/migrations).

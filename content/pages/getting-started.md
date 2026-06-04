@@ -17,7 +17,7 @@ This walks from an empty solution to a running toolup-forge app: server, Fable c
 
 Two routes — pick one:
 
-**A. Clone the canonical sample.** [`samples/HelloWorld/`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/samples/HelloWorld) in the forge repo is a runnable end-to-end app (server + Fable client + one module + Fable.Remoting wire). Clone forge, build, run.
+**A. Clone the canonical sample.** [`samples/HelloWorld/`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/samples/HelloWorld) in the forge repo is a runnable end-to-end app (server + Fable client + one module + ToolUp.Remoting wire). Clone forge, build, run.
 
 ```powershell
 git clone https://github.com/ToolUp-Forge/toolup-forge.git
@@ -119,7 +119,7 @@ let register () : ServerModule =
 
 // ClientModel.fs — Elmish Model/Msg/init/update
 module Hello.ClientModel
-open Elmish
+open ToolUp.Elmish
 type Model = { Text: string }
 type Msg = NoOp
 let init () : Model * Cmd<Msg> = { Text = "" }, Cmd.none
@@ -182,7 +182,7 @@ cd src/Client
 npm run dev
 ```
 
-Open `http://localhost:5000/`. The sidebar lists the `Hello` module; clicking it renders the Feliz view; the `DoThing` API call returns "did: ..." over Fable.Remoting.
+Open `http://localhost:5000/`. The sidebar lists the `Hello` module; clicking it renders the Feliz view; the `DoThing` API call returns "did: ..." over ToolUp.Remoting.
 
 The three-terminal loop is the fast-iteration setup; a single `dotnet run -- Run` from the FAKE driver also works for one-shot. The difference matters once you're editing — see [forge's CLAUDE.md](https://github.com/ToolUp-Forge/toolup-forge/blob/main/CLAUDE.md) "Fast iteration" for the rationale.
 
@@ -193,7 +193,7 @@ The three-terminal loop is the fast-iteration setup; a single `dotnet run -- Run
 | `ServerApp.run` | Stands up Giraffe + ASP.NET Core, wires default interfaces, mounts `/api/<module>/...` routes for every registered `ServerModule`, mounts auth + platform-admin + health-check surfaces. | [Composition roots](/docs/platform/composition-roots) |
 | `Hello.Server.register ()` | Returns a `ServerModule` carrying the `HelloApi` record. `ServerApp.addModules` mounts its handlers under `/api/Hello/`. | [Modules](/docs/platform/modules) |
 | `Client.run` | Stands up the Elmish runtime, mounts the SDK shell (sidebar, top bar, modals, toast centre, side panel), wires `AuthUIProvider`, attaches every registered `ClientModule`. | [Modules](/docs/platform/modules) |
-| `Fable.Remoting` (the wire) | Auto-generates a typed proxy from the `HelloApi` record. The client calls `api.DoThing "foo"` and the server handler runs — no DTOs, no hand-rolled JSON. | [Architecture](/docs/platform/architecture) |
+| `ToolUp.Remoting` (the wire) | Auto-generates a typed proxy from the `HelloApi` record. The client calls `api.DoThing "foo"` and the server handler runs — no DTOs, no hand-rolled JSON. Forked from Fable.Remoting (Zaid Ajaj, MIT) and ships in-tree under `ToolUp.Platform.{Core,Client,Server}`. | [Architecture](/docs/platform/architecture) |
 | `Mode = Individual` | Pins per-user scope isolation. Data the module persists belongs to the signed-in user. | [Surfaces](/docs/platform/surfaces) |
 
 ## Next — pick what to add

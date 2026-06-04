@@ -19,7 +19,7 @@ LLM providers behind one streaming + tool-calling interface. Pick by latency, co
 |---|---|---|
 | [`ToolUp.AIProviders.Claude`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/Claude) | Anthropic Claude (Opus / Sonnet / Haiku) | Prompt caching, vision, tool calling. Streaming via `message_delta` for usage reporting. |
 | [`ToolUp.AIProviders.OpenAI`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/OpenAI) | OpenAI models (GPT-4o / 4-mini / o-series) | Streaming via `stream_options.include_usage=true`. |
-| [`ToolUp.AIProviders.Gemini`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/Gemini) | Google Gemini | Phase 67 substrate. |
+| [`ToolUp.AIProviders.Gemini`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AIProviders/Gemini) | Google Gemini (1.5 / 2.x families) | Streaming, tool calling, structured output. |
 
 How to compose: `ServerApp.withAIProvider` (or via the `DefaultAIProviderFactory` for multi-provider deployments). Walkthrough at [AI getting started](/docs/ai/getting-started); contract at [AI extending](/docs/ai/extending).
 
@@ -165,7 +165,7 @@ Not "providers" in the interface-implementation sense — companions providing i
 | Package | What it wires |
 |---|---|
 | [`ToolUp.PublicRendering`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/ToolUp.PublicRendering) | SSR public-page substrate — Giraffe.ViewEngine + markdown loader + sitemap + structured-data helpers. This site uses it. |
-| [`ToolUp.AssetStore`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/ToolUp.AssetStore) | Hashed-filename asset publishing for the Client tier (Phase 39). |
+| [`ToolUp.AssetStore`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/ToolUp.AssetStore) | Hashed-filename asset publishing for the Client tier — content-addressable URLs, far-future cache headers, derivative generation. |
 | [`ToolUp.AgGridEnterprise`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/AgGridEnterprise) | AG Grid Enterprise initialisation shim — paid licence; opt-in only. |
 | [`ToolUp.Reporting.{Core,Server}`](https://github.com/ToolUp-Forge/toolup-forge/tree/main/src/ToolUp.Reporting) | Reporting primitives. |
 
