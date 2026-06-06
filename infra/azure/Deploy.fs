@@ -109,41 +109,30 @@ let private platformAppSettings =
 let private allAppSettings = platformAppSettings @ toolupAppSettings
 
 // ─── Resource graph ──────────────────────────────────────────────────
+//
+// The App Service Plan is provisioned out of band (the subscription
+// hadn't been quota-cleared for any paid SKU at first-deploy time, so
+// the plan was hand-created in the portal as P0v4 / westeurope / RG
+// toolup-forge-io). Farmer therefore manages only the webapp and
+// links it to the unmanaged plan by name.
+let private existingPlanName = envOr "AZURE_PLAN_NAME" "toolup-forge-io-web"
 
-let private plan =
-    servicePlan {
-        name (sprintf "%s-plan" appName)
-        sku selectedSku
-        operating_system Linux
-    }
+let private existingPlanId =
+    ResourceId.create (Farmer.Arm.Web.serverFarms, ResourceName existingPlanName, rgName)
 
-// `always_on` is incompatible with F1 — F1 is a free SKU that
-// explicitly does not support always-on. The Farmer `Sku` type is a
-// class (not a DU), so the conditional uses the lowercased SKU name
-// rather than a pattern match.
 let private toolupForgeIoApp =
-    if (skuName: string).ToUpperInvariant() = "F1" then
-        webApp {
-            name appName
-            link_to_service_plan plan
-            runtime_stack (Runtime.DotNet "10.0")
-            settings allAppSettings
-            https_only
-        }
-    else
-        webApp {
-            name appName
-            link_to_service_plan plan
-            runtime_stack (Runtime.DotNet "10.0")
-            settings allAppSettings
-            https_only
-            always_on
-        }
+    webApp {
+        name appName
+        link_to_unmanaged_service_plan existingPlanId
+        runtime_stack (Runtime.DotNet "10.0")
+        settings allAppSettings
+        https_only
+        always_on
+    }
 
 let private deployment =
     arm {
         location (Location region)
-        add_resource plan
         add_resource toolupForgeIoApp
     }
 
