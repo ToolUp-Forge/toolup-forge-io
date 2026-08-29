@@ -87,6 +87,14 @@ function Register-Proc {
 }
 
 function Start-Background {
+    # Named-only. `-Arguments $a $b` does NOT put $b in the array — it binds $b POSITIONALLY to
+    # $WorkingDirectory, which is a [string] and so accepts it SILENTLY: the process would launch
+    # in the wrong directory with an argument missing, and nothing would say so. (Phase 925:
+    # `-Compare <a> <b>` bound <b> onto -Render, took the render branch and exited 0 having
+    # compared nothing.) Every call site below already passes by name and wraps its array in @()
+    # or parentheses, so this changes no behaviour today — it forecloses the next edit that would
+    # not.
+    [CmdletBinding(PositionalBinding = $false)]
     param(
         [string]   $FilePath,
         [string[]] $Arguments,
